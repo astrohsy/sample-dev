@@ -1,24 +1,30 @@
 const cluster = require('cluster');
+require('dotenv').config();
 
 /* import sub processes */
 const runMaster = require('./src/master');
 const runWorker1 = require('./src/worker1');
+const runWorker2 = require('./src/worker2');
 
+const workerInfos = {
+    worker1: 'worker1',
+    worker2: 'worker2'
+};
 
 const main = async () => {
     if (cluster.isMaster) {
-        runMaster();
-        var worker1 = cluster.fork({ name: 'worker1' });
-        var worker2 = cluster.fork({ name: 'worker2' });
+        runMaster(workerInfos);
     }
 
     if (cluster.isWorker) {
-        if (process.env.name == 'worker1') {
+        if (process.env.name === workerInfos['worker1']) {
+            console.log(111);
             runWorker1();
         }
 
-        if (process.env.name == 'worker2') {
-            console.log('hehe');
+        else if (process.env.name === workerInfos['worker2']) {
+            console.log(222);
+            runWorker2();
         }
     }
 }

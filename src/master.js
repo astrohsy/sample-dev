@@ -1,8 +1,17 @@
+const cluster = require('cluster');
+
 const requestGenerator = require('../helper/requestGenerator');
 
-const testWithIteration = async () => {
+const testWithIteration = async (workerInfos) => {
+    console.log(process.env)
+    const getRequest = requestGenerator('GET', process.env.API_URL, 10, 100);
 
-    const getRequest = requestGenerator('GET', 'localhost:3000/', 10, 1000);
+
+    workers = {};
+    Object.entries(workerInfos).forEach(
+        ([key, value]) => {
+            workers[key] = cluster.fork({ name: value });
+    });
 
     console.time('request');
     
@@ -18,13 +27,17 @@ const testWithIteration = async () => {
         console.log(error);
     }
 
+    const filteredAns = ans.filter( (datum) => { return datum });
+    const refinedAns = filteredAns.map( (datum) => { return datum.data.message });
+    workers['worker1'].send({ data: refinedAns });
+
     console.log(ans.map((elem) => { 
         return elem ? elem.data.message : -1}));
     console.timeEnd('request');
 }
 
-const run = async() => {
-    await testWithIteration();
+const run = async (workers) => {
+    await testWithIteration(workers);
 }
 
 module.exports = run;
