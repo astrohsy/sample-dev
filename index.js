@@ -18,12 +18,10 @@ const main = async () => {
 
     if (cluster.isWorker) {
         if (process.env.name === workerInfos['worker1']) {
-            console.log(111);
             runWorker1();
         }
 
         else if (process.env.name === workerInfos['worker2']) {
-            console.log(222);
             runWorker2();
         }
     }

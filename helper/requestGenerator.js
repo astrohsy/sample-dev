@@ -5,7 +5,6 @@ const interceptorGenerator = (customAxios, maxRetry, waitTime) => {
         const { __retryCount: retryCount = 0 } = error.config;
         error.config.__retryCount = retryCount + 1;
         error.config.__isRetryRequest = true;
-        console.log(maxRetry);
 
         if (error.config &&
             error.response &&
@@ -41,7 +40,7 @@ const requestGenerator = (method, url, maxRetry, waitTime) => {
                 url: url + '/' + id
             });
         } catch (error) {  
-            return undefined;
+            return error;
         }
     }
 
