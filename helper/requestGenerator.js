@@ -21,7 +21,7 @@ const interceptorGenerator = (customAxios, maxRetry, waitTime) => {
     return interceptor;
 }
 
-const requestGenerator = (method, url, maxRetry, waitTime) => {
+const requestGenerator = (maxRetry, waitTime) => {
     const token = "1234";
     const config = { 'Authorization': 'Bearer ' + token }
 
@@ -30,15 +30,12 @@ const requestGenerator = (method, url, maxRetry, waitTime) => {
     });
     const customInterceptor = interceptorGenerator(customAxios, maxRetry, waitTime);
 
-    
     customAxios.interceptors.response.use(null, customInterceptor);
 
-    const request = async(id) => {
+    
+    const request = async (config) => {
         try {
-            return await customAxios({
-                method: method,
-                url: url + '/' + id
-            });
+            return await customAxios(config);
         } catch (error) {  
             return error;
         }
