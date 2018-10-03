@@ -1,6 +1,7 @@
 const requestGenerator = require('../helper/requestGenerator');
+const fs = require('fs');
 
-const batchSize = 5;
+const batchSize = 20;
 
 const run = async () => {
     let readyQueue = [];
@@ -30,12 +31,10 @@ const reqeustRoutine = async (readyQueue) => {
         };
     }
 
-    console.log(configGenerator(1))
-
     // 무한루프
     for (var iter = 1; iter; iter++) {
         let arrayOfPromises = [];
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 20; i++) {
             arrayOfPromises.push(
                 customRequest(configGenerator(i))
             );
@@ -48,8 +47,8 @@ const reqeustRoutine = async (readyQueue) => {
             console.log(error);
         }
 
-        const unhandledAns = ans.filter( (datum) => { return datum.status === undefined });
-        const filteredAns = ans.filter( (datum) => { return datum.status });
+        const unhandledAns = ans.filter( (datum) => { return datum.status; });
+        const filteredAns = ans.filter( (datum) => { return datum.status !== undefined });
         const refinedAns = filteredAns.map( (datum) => { return datum.data.message });
 
         if (unhandledAns.length > 0) handleError(unhandledAns, readyQueue);
@@ -58,9 +57,7 @@ const reqeustRoutine = async (readyQueue) => {
 }
 
 const handleError = async(errors, readyQueue) => {
-    console.log('-------');
-    console.log(errors);
-    const customRequest = requestGenerator('GET', process.env.API_URL, 10, 100);
+    const customRequest = requestGenerator(10, 1);
 
     const arrayOfPromises = errors.map( (error) => {
         return customRequest(error.config);
@@ -73,12 +70,13 @@ const handleError = async(errors, readyQueue) => {
         console.log(error);
     }
 
-    //console.log(ans);
+    //console.log(ans.map( (datum) => { return datum.status }));
 
     const filteredAns = ans.filter( (datum) => { return datum.status });
     const refinedAns = filteredAns.map( (datum) => { return datum.data.message });
 
-    console.log('handled::: ', ...refinedAns);
+    fs.appendFileSync('./log/worker1.error.log', refinedAns);
+    fs.appendFileSync('./log/worker1.error.log', '\n');
     readyQueue.push(...refinedAns);
 }
 

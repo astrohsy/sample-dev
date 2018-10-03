@@ -10,9 +10,9 @@ const interceptorGenerator = (customAxios, maxRetry, waitTime) => {
             error.response &&
             error.response.status === 400 &&
             retryCount < maxRetry) {
-            return new Promise((resolve, reject) => {
-                setTimeout(() => resolve(customAxios.request(error.config)), waitTime);
-            });
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => resolve(customAxios.request(error.config)), waitTime);
+                });
         }
 
         return Promise.reject(error);
@@ -28,6 +28,7 @@ const requestGenerator = (maxRetry, waitTime) => {
     const customAxios = axios.create({
         headers: config
     });
+    
     const customInterceptor = interceptorGenerator(customAxios, maxRetry, waitTime);
 
     customAxios.interceptors.response.use(null, customInterceptor);
