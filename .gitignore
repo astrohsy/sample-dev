@@ -3,3 +3,7 @@ node_modules/
 
 # logs
 *.log
+
+# images
+*.png
+

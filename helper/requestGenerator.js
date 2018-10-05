@@ -23,7 +23,11 @@ const interceptorGenerator = (customAxios, maxRetry, waitTime) => {
 
 const requestGenerator = (maxRetry, waitTime) => {
     const token = "1234";
-    const config = { 'Authorization': 'Bearer ' + token }
+    const config = { 
+        //'Authorization': 'Bearer ' + token 
+        'Accept': 'image/png',
+        'Content-Type': 'image/png'
+    }
 
     const customAxios = axios.create({
         headers: config

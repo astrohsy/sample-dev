@@ -18,6 +18,7 @@
   "homepage": "https://github.com/astrohsy/sample-dev#readme",
   "dependencies": {
     "axios": "^0.18.0",
-    "dotenv": "^6.0.0"
+    "dotenv": "^6.0.0",
+    "uuid": "^3.3.2"
   }
 }
